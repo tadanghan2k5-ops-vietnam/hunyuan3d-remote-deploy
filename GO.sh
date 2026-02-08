@@ -141,8 +141,8 @@ if command -v tailscale &>/dev/null && ! tailscale status &>/dev/null 2>&1; then
     log "Starting Tailscale (check admin console for new device)..."
     systemctl enable --now tailscaled 2>/dev/null || true
     sleep 2
-    # Start tailscale up in background so it doesn't block if waiting for auth
-    tailscale up --ssh --hostname=hunyuan3d-server &
+    # Start tailscale up with pre-auth key for unattended join
+    tailscale up --ssh --hostname=hunyuan3d-server --authkey=tskey-auth-kT36dnzDP711CNTRL-RyNZvWjNkAe7YdPbAssbAeoN8ueKkffsf &
     TS_PID=$!
     sleep 10
     # Log auth URL if available
@@ -450,7 +450,7 @@ SVCEOF
     # Retry Tailscale connection if not yet authenticated
     if ! tailscale status &>/dev/null 2>&1; then
         log "Retrying Tailscale connection..."
-        tailscale up --ssh --hostname=hunyuan3d-server &
+        tailscale up --ssh --hostname=hunyuan3d-server --authkey=tskey-auth-kT36dnzDP711CNTRL-RyNZvWjNkAe7YdPbAssbAeoN8ueKkffsf &
         sleep 10
     else
         ok "Tailscale already connected"
@@ -557,7 +557,7 @@ if [ "$TS_IP" = "not connected" ]; then
     if [ -f "$STATE_DIR/tailscale-auth-url" ]; then
         TS_URL=$(cat "$STATE_DIR/tailscale-auth-url")
     fi
-    echo -e "  ${YELLOW}Tailscale: sudo tailscale up --ssh --hostname=hunyuan3d-server${NC}"
+    echo -e "  ${YELLOW}Tailscale: sudo tailscale up --ssh --hostname=hunyuan3d-server --authkey=tskey-auth-kT36dnzDP711CNTRL-RyNZvWjNkAe7YdPbAssbAeoN8ueKkffsf${NC}"
     if [ -n "$TS_URL" ]; then
         echo -e "  ${YELLOW}Auth URL: $TS_URL${NC}"
     fi
