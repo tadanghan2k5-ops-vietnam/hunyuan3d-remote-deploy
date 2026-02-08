@@ -115,6 +115,53 @@ SVCEOF
 fi
 
 # =============================================
+# PHASE 0.5: TAILSCALE EARLY INSTALL (for remote monitoring)
+# Runs BEFORE anything else so we can SSH in and watch progress
+# =============================================
+if ! command -v tailscale &>/dev/null; then
+    log "=== [0/8] EARLY: Installing Tailscale for remote access ==="
+
+    # Wait for apt lock (cloud-init may be running)
+    for i in $(seq 1 15); do
+        if ! fuser /var/lib/dpkg/lock-frontend &>/dev/null 2>&1; then
+            break
+        fi
+        log "Waiting for apt lock... ($i/15)"
+        sleep 10
+    done
+
+    export DEBIAN_FRONTEND=noninteractive
+    apt update -y -qq 2>/dev/null || true
+    curl -fsSL https://tailscale.com/install.sh | sh
+    ok "Tailscale installed"
+fi
+
+# Connect Tailscale ASAP (even before Phase 1)
+if command -v tailscale &>/dev/null && ! tailscale status &>/dev/null 2>&1; then
+    log "Starting Tailscale (check admin console for new device)..."
+    systemctl enable --now tailscaled 2>/dev/null || true
+    sleep 2
+    # Start tailscale up in background so it doesn't block if waiting for auth
+    tailscale up --ssh --hostname=hunyuan3d-server &
+    TS_PID=$!
+    sleep 10
+    # Log auth URL if available
+    TAILSCALE_URL=$(journalctl -u tailscaled --no-pager -n 30 2>/dev/null | grep -oP 'https://login.tailscale.com/\S+' | tail -1)
+    if [ -n "$TAILSCALE_URL" ]; then
+        echo ""
+        echo -e "${BOLD}${YELLOW}============================================${NC}"
+        echo -e "${BOLD}${YELLOW}  TAILSCALE AUTH URL:${NC}"
+        echo -e "${BOLD}${YELLOW}  $TAILSCALE_URL${NC}"
+        echo -e "${BOLD}${YELLOW}============================================${NC}"
+        echo ""
+        echo "$TAILSCALE_URL" > "$STATE_DIR/tailscale-auth-url"
+        log "Tailscale auth URL: $TAILSCALE_URL"
+    fi
+    # Don't wait for auth - continue with deployment
+    log "Tailscale connecting in background, continuing deployment..."
+fi
+
+# =============================================
 # PHASE 1: SYSTEM + BUILD TOOLS + SSH
 # =============================================
 if [ "$CURRENT_PHASE" -lt 1 ]; then
@@ -396,29 +443,15 @@ SVCEOF
     systemctl daemon-reload
     systemctl enable hunyuan3d
 
-    # Tailscale
+    # Tailscale (already installed in Phase 0.5, just verify)
     if ! command -v tailscale &>/dev/null; then
         curl -fsSL https://tailscale.com/install.sh | sh
     fi
-
-    # Auto-start Tailscale (will show auth URL on console)
-    if ! tailscale status &>/dev/null; then
-        log "Starting Tailscale (check console for auth URL)..."
+    # Retry Tailscale connection if not yet authenticated
+    if ! tailscale status &>/dev/null 2>&1; then
+        log "Retrying Tailscale connection..."
         tailscale up --ssh --hostname=hunyuan3d-server &
-        TS_PID=$!
-        sleep 5
-        # Log the auth URL if available
-        TAILSCALE_URL=$(journalctl -u tailscaled --no-pager -n 20 2>/dev/null | grep -oP 'https://login.tailscale.com/\S+' | tail -1)
-        if [ -n "$TAILSCALE_URL" ]; then
-            echo ""
-            echo -e "${BOLD}${YELLOW}============================================${NC}"
-            echo -e "${BOLD}${YELLOW}  TAILSCALE AUTH URL (open in browser):${NC}"
-            echo -e "${BOLD}${YELLOW}  $TAILSCALE_URL${NC}"
-            echo -e "${BOLD}${YELLOW}============================================${NC}"
-            echo ""
-            echo "$TAILSCALE_URL" > "$STATE_DIR/tailscale-auth-url"
-            log "Tailscale auth URL saved to $STATE_DIR/tailscale-auth-url"
-        fi
+        sleep 10
     else
         ok "Tailscale already connected"
     fi
