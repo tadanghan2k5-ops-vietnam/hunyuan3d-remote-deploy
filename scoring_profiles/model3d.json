@@ -1,0 +1,70 @@
+{
+  "_version": "1.0",
+  "_description": "3D model quality scoring profiles — distilled from 3D pipeline + game optimization KB",
+  "_usage": "Loaded by server.py v18.0 at startup for _review_3d()",
+
+  "category_vertex_targets": {
+    "_doc": "Min/max vertex counts for game-ready models per category",
+    "prop":        { "min": 200,  "max": 5000,   "ideal_range": [500, 3000] },
+    "character":   { "min": 500,  "max": 15000,  "ideal_range": [2000, 8000] },
+    "environment": { "min": 200,  "max": 50000,  "ideal_range": [1000, 20000] },
+    "vehicle":     { "min": 500,  "max": 20000,  "ideal_range": [2000, 10000] },
+    "weapon":      { "min": 100,  "max": 5000,   "ideal_range": [300, 2000] },
+    "creature":    { "min": 500,  "max": 15000,  "ideal_range": [2000, 8000] },
+    "default":     { "min": 100,  "max": 10000,  "ideal_range": [200, 5000] }
+  },
+
+  "min_absolute": {
+    "vertices": 50,
+    "faces": 30,
+    "file_bytes": 1000
+  },
+
+  "topology_quality": {
+    "_doc": "Face/vertex ratio indicates mesh topology quality",
+    "isolated_vertices_threshold": 0.5,
+    "excessive_triangulation_threshold": 4.0,
+    "ideal_ratio_range": [1.5, 2.5]
+  },
+
+  "geometry_checks": {
+    "degenerate_extent_threshold": 0.001,
+    "extreme_aspect_ratio": 50,
+    "high_aspect_ratio": 20,
+    "normals_required_above_verts": 100
+  },
+
+  "score_penalties": {
+    "tiny_file": -60,
+    "too_few_vertices": -40,
+    "low_vertex_count": -15,
+    "high_poly_count": -5,
+    "too_few_faces": -30,
+    "degenerate_mesh": -70,
+    "extreme_aspect_ratio": -15,
+    "high_aspect_ratio": -5,
+    "isolated_vertices": -10,
+    "excessive_triangulation": -5,
+    "missing_normals": -5
+  },
+
+  "pass_threshold": 40,
+
+  "lod_recommendations": {
+    "_doc": "LOD vertex reduction targets from optimization KB",
+    "LOD0": 1.0,
+    "LOD1": 0.5,
+    "LOD2": 0.25,
+    "LOD3": 0.1,
+    "cull_distance_multiplier": 2.5
+  },
+
+  "game_ready_checklist": [
+    "watertight_mesh",
+    "vertex_normals_present",
+    "reasonable_poly_count",
+    "no_degenerate_faces",
+    "reasonable_aspect_ratio",
+    "proper_face_vert_ratio"
+  ]
+}

@@ -1,0 +1,95 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  refresh-installer:
+    update: false
+
+  # Wipe entire disk, use LVM
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+
+  # Network: DHCP on all ethernet interfaces
+  network:
+    version: 2
+    ethernets:
+      id0:
+        match:
+          name: "en*"
+        dhcp4: true
+      id1:
+        match:
+          name: "eth*"
+        dhcp4: true
+
+  # User: han / han123
+  identity:
+    hostname: hunyuan3d-server
+    username: han
+    password: "$6$KJF3BgTn0QmGyrwm$ZchXMx9y.9hw3HYX9HJOv41xuTGioSGg1qm0UlJ9Wws9o.8KVWfufTvWap8aRiS5FU7O7/9P9AZipaIwYS0Yx1"
+
+  # SSH with pre-authorized key from Windows machine
+  ssh:
+    install-server: true
+    allow-pw: true
+    authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEqOdiGyuRTRXuUe6fRlVpsMmxxPM9POA6Rr5a2gXNFO han@DESKTOP-MR266BC
+
+  # Packages during install
+  packages:
+    - openssh-server
+    - build-essential
+    - git
+    - curl
+    - wget
+    - tmux
+    - htop
+    - ufw
+    - python3.11
+    - python3.11-venv
+    - python3.11-dev
+    - python3-pip
+
+  # Post-install: download deploy files from GitHub + create auto-resume service
+  late-commands:
+    - curtin in-target -- mkdir -p /home/han/hunyuan3d-deploy/scoring_profiles
+    # Download deploy files from GitHub
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/GO.sh https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/GO.sh"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/server.py https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/server.py"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/scoring_profiles/audio.json https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/scoring_profiles/audio.json"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/scoring_profiles/image.json https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/scoring_profiles/image.json"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/scoring_profiles/model3d.json https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/scoring_profiles/model3d.json"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/scoring_profiles/style_presets.json https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/scoring_profiles/style_presets.json"
+    - "curtin in-target -- wget -q -O /home/han/hunyuan3d-deploy/scoring_profiles/video.json https://raw.githubusercontent.com/tadanghan2k5-ops-vietnam/hunyuan3d-remote-deploy/main/scoring_profiles/video.json"
+    - curtin in-target -- chown -R han:han /home/han/hunyuan3d-deploy
+    - curtin in-target -- chmod +x /home/han/hunyuan3d-deploy/GO.sh
+    # Create auto-deploy service (runs GO.sh on first boot, resumes after reboots)
+    - |
+      cat > /target/etc/systemd/system/hunyuan3d-deploy.service << 'EOF'
+      [Unit]
+      Description=Hunyuan3D Auto Deploy (resumes after reboot)
+      After=network-online.target
+      Wants=network-online.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/bash /home/han/hunyuan3d-deploy/GO.sh
+      RemainAfterExit=yes
+      StandardOutput=journal+console
+      StandardError=journal+console
+      TimeoutStartSec=7200
+
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+    - curtin in-target -- systemctl enable hunyuan3d-deploy.service
+    # Enable passwordless sudo for han (needed for GO.sh phases)
+    - "echo 'han ALL=(ALL) NOPASSWD: ALL' > /target/etc/sudoers.d/han"
+    - chmod 440 /target/etc/sudoers.d/han
+
+  # Auto reboot after OS install
+  shutdown: reboot

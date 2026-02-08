@@ -1,0 +1,80 @@
+{
+  "_version": "1.0",
+  "_description": "Image quality scoring profiles — distilled from 141K-line game dev KB",
+  "_usage": "Loaded by server.py v18.0 + remote-ai-server.py v10.0 at startup",
+
+  "category_weights": {
+    "_doc": "Per-category weight distribution for composite score. Each sums to 100.",
+    "character":   { "base": 15, "edge": 30, "color": 15, "contrast": 10, "saturation": 15, "sharpness": 15 },
+    "environment": { "base": 15, "edge": 15, "color": 25, "contrast": 15, "saturation": 20, "sharpness": 10 },
+    "prop":        { "base": 15, "edge": 25, "color": 15, "contrast": 15, "saturation": 15, "sharpness": 15 },
+    "icon":        { "base": 10, "edge": 20, "color": 10, "contrast": 30, "saturation": 10, "sharpness": 20 },
+    "texture":     { "base": 20, "edge": 20, "color": 15, "contrast": 15, "saturation": 10, "sharpness": 20 },
+    "sprite":      { "base": 15, "edge": 25, "color": 15, "contrast": 15, "saturation": 15, "sharpness": 15 },
+    "ui":          { "base": 10, "edge": 15, "color": 10, "contrast": 35, "saturation": 10, "sharpness": 20 },
+    "vfx":         { "base": 10, "edge": 15, "color": 15, "contrast": 10, "saturation": 35, "sharpness": 15 },
+    "map":         { "base": 15, "edge": 15, "color": 25, "contrast": 15, "saturation": 20, "sharpness": 10 },
+    "promo":       { "base": 10, "edge": 20, "color": 20, "contrast": 15, "saturation": 20, "sharpness": 15 },
+    "albedo":      { "base": 20, "edge": 10, "color": 20, "contrast": 10, "saturation": 20, "sharpness": 20 },
+    "concept":     { "base": 15, "edge": 25, "color": 15, "contrast": 15, "saturation": 15, "sharpness": 15 },
+    "tilemap":     { "base": 15, "edge": 20, "color": 20, "contrast": 15, "saturation": 10, "sharpness": 20 },
+    "spritesheet": { "base": 15, "edge": 25, "color": 15, "contrast": 15, "saturation": 15, "sharpness": 15 },
+    "default":     { "base": 20, "edge": 20, "color": 15, "contrast": 15, "saturation": 15, "sharpness": 15 }
+  },
+
+  "category_thresholds": {
+    "_doc": "Per-category minimum thresholds. Below these → score penalty.",
+    "character":   { "min_res": 256, "sharpness_min": 50, "edge_min": 4.0, "saturation_min": 10.0, "channel_limit": 150 },
+    "environment": { "min_res": 256, "sharpness_min": 30, "edge_min": 2.5, "saturation_min": 8.0,  "channel_limit": 150 },
+    "prop":        { "min_res": 256, "sharpness_min": 50, "edge_min": 3.5, "saturation_min": 8.0,  "channel_limit": 150 },
+    "icon":        { "min_res": 128, "sharpness_min": 80, "edge_min": 5.0, "saturation_min": 5.0,  "channel_limit": 150 },
+    "texture":     { "min_res": 256, "sharpness_min": 60, "edge_min": 3.0, "saturation_min": 5.0,  "channel_limit": 80 },
+    "sprite":      { "min_res": 128, "sharpness_min": 40, "edge_min": 3.5, "saturation_min": 5.0,  "channel_limit": 150 },
+    "ui":          { "min_res": 128, "sharpness_min": 70, "edge_min": 4.0, "saturation_min": 3.0,  "channel_limit": 150 },
+    "vfx":         { "min_res": 256, "sharpness_min": 20, "edge_min": 2.0, "saturation_min": 20.0, "channel_limit": 180 },
+    "map":         { "min_res": 256, "sharpness_min": 30, "edge_min": 2.5, "saturation_min": 8.0,  "channel_limit": 150 },
+    "promo":       { "min_res": 256, "sharpness_min": 40, "edge_min": 3.0, "saturation_min": 12.0, "channel_limit": 150 },
+    "albedo":      { "min_res": 256, "sharpness_min": 50, "edge_min": 2.0, "saturation_min": 5.0,  "channel_limit": 80 },
+    "concept":     { "min_res": 256, "sharpness_min": 50, "edge_min": 4.0, "saturation_min": 8.0,  "channel_limit": 150 },
+    "tilemap":     { "min_res": 256, "sharpness_min": 50, "edge_min": 3.0, "saturation_min": 5.0,  "channel_limit": 100 },
+    "spritesheet": { "min_res": 256, "sharpness_min": 40, "edge_min": 3.5, "saturation_min": 5.0,  "channel_limit": 150 },
+    "default":     { "min_res": 256, "sharpness_min": 50, "edge_min": 3.0, "saturation_min": 5.0,  "channel_limit": 150 }
+  },
+
+  "tileability_categories": ["texture", "tilemap", "albedo"],
+  "tileability_min_score": 50,
+
+  "blank_detection": {
+    "stddev_threshold": 15.0,
+    "low_variance_threshold": 30,
+    "min_file_bytes": 5000
+  },
+
+  "score_penalties": {
+    "blank": -50,
+    "low_variance": -20,
+    "tiny_file": -40,
+    "color_bias": -15,
+    "flat_image": -15,
+    "blurry": -15,
+    "slightly_soft": -5,
+    "low_saturation": -10,
+    "poor_tileability": -10,
+    "low_resolution": -30
+  },
+
+  "pass_threshold": 50,
+
+  "vision_category_keywords": {
+    "_doc": "Keywords that earn alignment bonus in vision evaluation per category",
+    "character":   ["person", "character", "man", "woman", "figure", "creature", "warrior", "knight"],
+    "environment": ["landscape", "scene", "background", "forest", "city", "dungeon"],
+    "prop":        ["object", "item", "weapon", "tool", "furniture"],
+    "icon":        ["icon", "symbol", "simple", "logo"],
+    "vfx":         ["glow", "particle", "effect", "magic", "fire", "light", "energy"],
+    "texture":     ["seamless", "pattern", "texture", "material", "surface"],
+    "sprite":      ["pixel", "sprite", "game", "retro"],
+    "ui":          ["interface", "button", "panel", "menu", "ui"],
+    "map":         ["map", "overhead", "terrain", "cartography"]
+  }
+}

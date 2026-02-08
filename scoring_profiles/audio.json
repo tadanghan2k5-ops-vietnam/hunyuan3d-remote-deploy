@@ -1,0 +1,78 @@
+{
+  "_version": "1.0",
+  "_description": "Audio quality scoring profiles — distilled from game audio/DSP/music KB",
+  "_usage": "Loaded by server.py v18.0 at startup for _review_audio()",
+
+  "category_duration_ranges": {
+    "_doc": "Expected duration ranges in seconds per audio category",
+    "sfx":     { "min": 0.05, "max": 10,  "typical": 1.0 },
+    "music":   { "min": 5,    "max": 600, "typical": 120 },
+    "tts":     { "min": 0.5,  "max": 120, "typical": 5.0 },
+    "ambient": { "min": 3,    "max": 60,  "typical": 15 },
+    "ui_sfx":  { "min": 0.02, "max": 2,   "typical": 0.3 },
+    "voice":   { "min": 0.5,  "max": 60,  "typical": 3.0 },
+    "default": { "min": 0.05, "max": 600, "typical": 5.0 }
+  },
+
+  "silence_detection": {
+    "min_rms": 0.001,
+    "quiet_rms": 0.01
+  },
+
+  "clipping_detection": {
+    "clip_threshold": 0.99,
+    "severe_clip_ratio": 0.1,
+    "minor_clip_ratio": 0.01
+  },
+
+  "dc_offset": {
+    "threshold": 0.1
+  },
+
+  "crest_factor": {
+    "_doc": "Peak-to-RMS ratio in dB. Indicates dynamic range quality.",
+    "sfx_high_warning": 25,
+    "compressed_warning": 3,
+    "exempt_categories": ["ambient"],
+    "ideal_range_sfx": [6, 20],
+    "ideal_range_music": [8, 18]
+  },
+
+  "spectral_analysis": {
+    "_doc": "Frequency content quality checks",
+    "tts_centroid_min_hz": 80,
+    "tts_centroid_max_hz": 6000,
+    "sfx_min_spread_hz": 500,
+    "music_min_spread_hz": 1000,
+    "analysis_max_seconds": 2
+  },
+
+  "score_penalties": {
+    "tiny_file": -60,
+    "much_shorter": -30,
+    "much_longer": -10,
+    "too_short_for_category": -15,
+    "too_long_for_category": -5,
+    "silent": -50,
+    "very_quiet": -15,
+    "clipping_severe": -20,
+    "clipping_minor": -5,
+    "dc_offset": -10,
+    "high_crest_factor": -5,
+    "low_crest_factor": -5,
+    "unusual_speech_centroid": -5
+  },
+
+  "pass_threshold": 40,
+
+  "game_audio_standards": {
+    "_doc": "KB-derived game audio quality benchmarks",
+    "sample_rate_min": 22050,
+    "sample_rate_recommended": 44100,
+    "bit_depth_min": 16,
+    "loudness_target_lufs": -14,
+    "sfx_headroom_db": -3,
+    "music_headroom_db": -6,
+    "voice_headroom_db": -6
+  }
+}

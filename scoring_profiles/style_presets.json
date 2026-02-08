@@ -1,0 +1,133 @@
+{
+  "_version": "1.0",
+  "_description": "Image generation style presets — shared between remote-ai-server.py + handlers.js",
+  "_usage": "Master source of truth for all 15 asset categories. Servers load this at startup.",
+
+  "presets": {
+    "gameAsset": {
+      "suffix": ", game asset, clean render, professional quality, sharp details, studio lighting, production ready",
+      "negative": "blurry, low quality, distorted, deformed, ugly, watermark, text, signature, oversaturated, noisy, artifacts, jpeg artifacts",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [1024, 1024], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "character": {
+      "suffix": ", professional character concept art, clean design, game-ready, consistent proportions, clear silhouette readable at 64px, dynamic pose, 3-5 color palette, vibrant colors",
+      "negative": "blurry, low quality, distorted, deformed, ugly, watermark, text, extra limbs, missing limbs, bad anatomy, bad proportions, duplicate, mutated hands, poorly drawn face, mutation, disfigured, extra fingers, fused fingers, too many fingers, long neck, cross-eyed",
+      "guidance_boost": 0.5, "steps_boost": 2,
+      "optimal_res": [768, 1024], "optimal_steps": 28, "optimal_guidance": 4.0
+    },
+    "environment": {
+      "suffix": ", atmospheric game environment, depth layers, foreground-midground-background composition, consistent directional lighting, cinematic color grading, parallax-ready",
+      "negative": "blurry, low quality, distorted, ugly, watermark, text, people, characters, UI elements, HUD, unnatural colors, floating objects, impossible architecture, tiling artifacts",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [1344, 768], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "prop": {
+      "suffix": ", centered composition, clean edges, studio lighting, game prop, single object on clean white background, sharp focus, production quality, game-ready topology",
+      "negative": "blurry, low quality, distorted, ugly, watermark, text, multiple objects, cluttered background, human, character, hands holding, partial view, cropped",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [1024, 1024], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "icon": {
+      "suffix": ", centered, symmetric, bold readable silhouette at 16px, game icon, clean simple design, single concept, high contrast, crisp vector edges, consistent padding",
+      "negative": "blurry, low quality, text, words, letters, complex background, realistic photo, multiple icons, border cut off, asymmetric",
+      "guidance_boost": 0.5, "steps_boost": 0,
+      "optimal_res": [512, 512], "optimal_steps": 25, "optimal_guidance": 4.0
+    },
+    "texture": {
+      "suffix": ", seamless tileable texture, uniform lighting, PBR-ready, consistent scale, production quality, no visible seams when tiled, high frequency detail",
+      "negative": "blurry, low quality, visible seams, non-tileable, border, frame, text, watermark, objects, characters, perspective, shadows, uneven lighting",
+      "guidance_boost": 0.0, "steps_boost": 2,
+      "optimal_res": [1024, 1024], "optimal_steps": 28, "optimal_guidance": 3.5
+    },
+    "sprite": {
+      "suffix": ", clean pixel edges, consistent limited palette max 32 colors, animation-ready, game sprite, transparent background, centered, pixel-perfect alignment",
+      "negative": "blurry, low quality, 3D render, realistic, inconsistent style, mixed resolutions, anti-aliased edges on pixel art, watermark, text",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [512, 512], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "concept": {
+      "suffix": ", concept art, pure white background, professional 3D reference, sharp details, even diffuse lighting, multiple angles reference sheet, game-ready design",
+      "negative": "blurry, multiple characters, cluttered background, low quality, text, watermark, extra limbs, deformed, complex background, gradient background",
+      "guidance_boost": 0.5, "steps_boost": 2,
+      "optimal_res": [1024, 768], "optimal_steps": 28, "optimal_guidance": 4.0
+    },
+    "promo": {
+      "suffix": ", cinematic composition, key art quality, dramatic lighting, professional game art, marketing quality, rule of thirds, focal point, depth of field",
+      "negative": "blurry, low quality, amateur, stock photo, watermark, text overlay, low resolution, jpeg artifacts, oversaturated",
+      "guidance_boost": 0.0, "steps_boost": 3,
+      "optimal_res": [1344, 768], "optimal_steps": 30, "optimal_guidance": 3.5
+    },
+    "ui": {
+      "suffix": ", flat design, clean vector style, crisp edges, consistent 8px grid padding, UI design, game interface element, WCAG contrast compliant, scalable",
+      "negative": "blurry, low quality, 3D, realistic, photo, shadows, perspective distortion, text content, lorem ipsum, watermark, gradient banding",
+      "guidance_boost": 0.5, "steps_boost": 0,
+      "optimal_res": [512, 512], "optimal_steps": 25, "optimal_guidance": 4.0
+    },
+    "map": {
+      "suffix": ", top-down orthographic view, clear landmarks, readable terrain at 50% zoom, game map style, strategic overview, distinct biome colors, cartographic quality",
+      "negative": "blurry, low quality, realistic satellite, photo, 3D perspective, characters, UI overlay, text labels, watermark",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [1024, 1024], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "vfx": {
+      "suffix": ", dynamic motion energy, glowing, vibrant, particle-like, game VFX reference, alpha-friendly, luminous on black background, additive blend ready",
+      "negative": "blurry, low quality, static, no motion, dull colors, watermark, text, realistic photo, solid background, no transparency feel",
+      "guidance_boost": 0.0, "steps_boost": 0,
+      "optimal_res": [512, 512], "optimal_steps": 25, "optimal_guidance": 3.5
+    },
+    "albedo": {
+      "suffix": ", flat diffuse lighting only, no shadows, no specular highlights, pure albedo color map, PBR texture, uniform illumination, no ambient occlusion",
+      "negative": "shadows, specular, highlights, reflections, ambient occlusion, rim light, dramatic lighting, depth, perspective, 3D, watermark, text",
+      "guidance_boost": 0.5, "steps_boost": 2,
+      "optimal_res": [1024, 1024], "optimal_steps": 28, "optimal_guidance": 4.0
+    },
+    "tilemap": {
+      "suffix": ", seamless tileable game tilemap, top-down view, consistent pixel density, tile-aligned grid, clean edges between tiles, game tileset",
+      "negative": "perspective, 3D view, shadows, characters, UI, text, watermark, non-tileable, visible seams, inconsistent scale",
+      "guidance_boost": 0.0, "steps_boost": 2,
+      "optimal_res": [1024, 1024], "optimal_steps": 28, "optimal_guidance": 3.5
+    },
+    "spritesheet": {
+      "suffix": ", sprite sheet, uniform grid layout, consistent character size, white or transparent background, animation frames, game sprite sheet, clean separation between frames",
+      "negative": "overlapping sprites, inconsistent sizes, blurry, realistic, watermark, text, complex background, merged frames",
+      "guidance_boost": 0.0, "steps_boost": 2,
+      "optimal_res": [1024, 1024], "optimal_steps": 28, "optimal_guidance": 3.5
+    }
+  },
+
+  "category_keywords": {
+    "_doc": "Auto-detect category from prompt keywords. Score 3+ = match.",
+    "character":   ["character", "hero", "warrior", "mage", "npc", "player", "avatar", "knight", "monster", "creature", "boss", "enemy", "villager"],
+    "environment": ["environment", "landscape", "background", "scene", "forest", "dungeon", "cave", "city", "town", "mountain", "ocean", "sky", "desert", "level background"],
+    "prop":        ["prop", "item", "weapon", "sword", "shield", "potion", "chest", "barrel", "crate", "tool", "furniture", "object"],
+    "icon":        ["icon", "button icon", "ability icon", "skill icon", "inventory icon", "game icon"],
+    "texture":     ["texture", "material", "surface", "stone texture", "wood texture", "metal texture", "fabric", "ground texture", "wall texture", "pbr"],
+    "sprite":      ["sprite", "pixel art", "pixel character", "8-bit", "16-bit", "retro sprite", "2d character"],
+    "ui":          ["ui", "interface", "hud", "menu", "button", "panel", "health bar", "mana bar", "dialog box", "tooltip"],
+    "map":         ["map", "world map", "game map", "minimap", "level map", "dungeon map", "overworld"],
+    "vfx":         ["vfx", "particle", "explosion", "magic effect", "fire effect", "lightning", "smoke", "sparkle", "aura", "spell effect"],
+    "promo":       ["promo", "key art", "cover art", "banner", "promotional", "splash art", "marketing"],
+    "concept":     ["concept art", "reference sheet", "3d reference", "turnaround", "model sheet"],
+    "albedo":      ["albedo", "diffuse map", "base color map"],
+    "tilemap":     ["tilemap", "tileset", "tile set", "game tiles"],
+    "spritesheet": ["spritesheet", "sprite sheet", "animation sheet", "walk cycle sheet"]
+  },
+
+  "prompt_enhancers": {
+    "_doc": "Auto-appended to prompts when category detected. Used by handlers.js.",
+    "character":   ", professional character concept art, clean design, game-ready, consistent proportions, clear silhouette readable at 64px",
+    "environment": ", atmospheric, depth layers, foreground-midground-background composition, consistent directional lighting, game environment",
+    "prop":        ", centered composition, clean edges, studio lighting, game prop, single object on clean white background",
+    "ui":          ", flat design, clean vector style, crisp edges, consistent 8px grid padding, UI design, game interface element",
+    "icon":        ", centered, symmetric, bold readable silhouette at 16px, game icon, clean simple design, single concept",
+    "vfx":         ", dynamic motion energy, glowing, vibrant, particle-like, game VFX reference, alpha-friendly, luminous",
+    "texture":     ", seamless tileable, uniform lighting, PBR-ready, consistent scale, production quality texture, no visible seams",
+    "sprite":      ", clean pixel edges, consistent limited palette, animation-ready, game sprite, transparent background",
+    "map":         ", top-down orthographic view, clear landmarks, readable terrain at 50% zoom, game map style, strategic overview",
+    "promo":       ", cinematic composition, key art quality, dramatic lighting, professional game art, marketing quality, rule of thirds",
+    "albedo":      ", flat diffuse lighting only, no shadows, no specular, pure albedo color, PBR texture, uniform illumination",
+    "tilemap":     ", seamless tileable game tilemap, top-down view, consistent pixel density, tile-aligned grid, clean tile edges",
+    "spritesheet": ", sprite sheet, uniform grid layout, consistent size, white background, animation frames, clean separation"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "_version": "1.0",
+  "_description": "Video quality scoring profiles — from game dev KB",
+  "_usage": "Loaded by server.py v18.0 at startup for _review_video()",
+
+  "min_file_bytes": 5000,
+  "min_frames": 2,
+  "min_resolution": { "width": 128, "height": 128 },
+
+  "category_expectations": {
+    "gameplay": { "min_fps": 24, "min_frames": 48, "min_res": 480 },
+    "cutscene": { "min_fps": 24, "min_frames": 72, "min_res": 720 },
+    "trailer":  { "min_fps": 30, "min_frames": 150, "min_res": 720 },
+    "gif":      { "min_fps": 10, "min_frames": 4, "min_res": 128 },
+    "default":  { "min_fps": 15, "min_frames": 2, "min_res": 128 }
+  },
+
+  "score_penalties": {
+    "tiny_file": -60,
+    "too_few_frames": -50,
+    "below_expected_frames": -20,
+    "very_low_resolution": -20
+  },
+
+  "pass_threshold": 40
+}
